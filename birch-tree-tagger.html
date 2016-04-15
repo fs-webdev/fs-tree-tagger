@@ -49,9 +49,6 @@ Example:
                 <small>[[item.lifespan]]</small>&nbsp;•&nbsp;<small>[[item.pid]]</small>
               </div>
             </div>
-            <div hidden='[[!item.pid]]'>
-              <i class="tree-attached"></i>
-            </div>
           </div>
         </template> 
         <!-- If they are creating a non existing tag -->
@@ -74,18 +71,19 @@ Example:
       ],
 
       properties: {
+        /**
+         * The cis id of the user
+         */
         cisId: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The data containing the search results
          */
         data: {
+          type: Object,
           value: function() { return [] }
-        },
-
-        position: {
-          value: function() { return { x: 0, y: 0 } }
         },
         /**
          * The search string
@@ -96,11 +94,22 @@ Example:
           observer: '_updateSearch'
         }
       },
-
+      /**
+       * Position the element
+       */
+      position: function(x, y) {
+        this.style.left = x + 'px';
+        this.style.top = y + 'px';
+      },
+      /**
+       * Handles the response from the server
+       */
       _handleReq: function(e) {
         this.data = e.detail.response;
       },
-
+      /**
+       * Make a request to the server as the search value changes
+       */
       _updateSearch: function(val) {
         var self = this;
         this.debounce('birch-tree-tagger-search-update', function() {
