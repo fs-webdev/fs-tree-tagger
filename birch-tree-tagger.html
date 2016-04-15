@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../oak-ajax-behavior/oak-ajax-behavior.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../fs-styles/fs-styles.html">
+
+<!--
+An element that provides autocomplete suggestions for tagging to the tree
+
+Example:
+
+    <birch-tree-tagger></birch-tree-tagger>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="birch-tree-tagger">
+  <style include='iron-flex fs-styles'></style>
+  <link rel="import" type="css" href="birch-tree-tagger.css">
+  <template>
+    <iron-ajax
+      id='req'
+      method='GET'
+      url='[[ajaxBase]]/photos/apiHelper/tagList/[[cisId]]?q=[[searchVal]]'
+      headers='[[authHeaders]]'
+      handle-as='json'
+      on-response='_handleReq'></iron-ajax>
+    <div class="results-list">
+      <input class='search-input' type="text" value='{{searchVal::input}}'>
+      <div class="results" hidden='[[!searchVal]]'>
+        <template is='dom-repeat' items='[[data]]'>
+          <div class="layout horizontal center contents justified">
+            <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
+            <img alt="" src='[[item.thumbSquareUrl]]' hidden='[[!item.thumbSquareUrl]]' class='round'>
+            <div class='flex'>
+              <strong>[[item.name]]</strong><br>
+              <div hidden='[[!item.pid]]'>
+                <small>[[item.lifespan]]</small>&nbsp;•&nbsp;<small>[[item.pid]]</small>
+              </div>
+            </div>
+            <div hidden='[[!item.pid]]'>
+              <i class="tree-attached"></i>
+            </div>
+          </div>
+        </template> 
+        <!-- If they are creating a non existing tag -->
+        <div class="layout horizontal center contents justified">
+          <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
+            <div class='flex'>
+              <strong>Add New</strong>
+            </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'birch-tree-tagger',
+
+      behaviors: [
+        OakAJAXBehavior 
+      ],
+
+      properties: {
+        cisId: {
+          type: String
+        },
+        /**
+         * The data containing the search results
+         */
+        data: {
+          value: function() { return [] }
+        },
+
+        position: {
+          value: function() { return { x: 0, y: 0 } }
+        },
+        /**
+         * The search string
+         */
+        searchVal: {
+          type: String,
+          value: '',
+          observer: '_updateSearch'
+        }
+      },
+
+      _handleReq: function(e) {
+        this.data = e.detail.response;
+      },
+
+      _updateSearch: function(val) {
+        var self = this;
+        this.debounce('birch-tree-tagger-search-update', function() {
+          if (val) {
+            self.$.req.generateRequest();
+          }
+        },200)
+      }
+
+    });
+  </script>
+</dom-module>
