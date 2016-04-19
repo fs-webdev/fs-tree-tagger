@@ -34,7 +34,7 @@ Example:
     <iron-ajax
       id='req'
       method='GET'
-      url='[[ajaxBase]]/photos/apiHelper/tagList/[[cisId]]?q=[[searchVal]]'
+      url='[[_base]]/photos/apiHelper/tagList/[[cisId]]?q=[[searchVal]]'
       headers='[[authHeaders]]'
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
@@ -78,6 +78,13 @@ Example:
          * The artifact id of the artifact being tagged
          */
         artifactId: {
+          type: String,
+          value: ''
+        },
+        /**
+         * A base location for creating the url for the request
+         */
+        _base: {
           type: String,
           value: ''
         },
@@ -137,6 +144,14 @@ Example:
         y: {
           type: Number,
           value: 0
+        }
+      },
+      ready: function() {
+        // oak-ajax-behavior won't proxy localhost on port 5000
+        if (~location.origin.indexOf('localhost')) {
+          this._base = 'https://integration.familysearch.org'
+        } else {
+          this._base = this.ajaxBase;
         }
       },
       /**
