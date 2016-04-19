@@ -31,6 +31,7 @@ Example:
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
     <wc-i18n-src locale='[[_lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
+    <wc-i18n key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>    
     <iron-ajax
       id='req'
       method='GET'
@@ -39,7 +40,7 @@ Example:
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
     <div class="results-list">
-      <input class='search-input' type="text" value='{{searchVal::input}}'>
+      <input class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
           <div class="layout horizontal center contents justified" on-click='_handleClick'>
