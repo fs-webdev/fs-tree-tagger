@@ -3,13 +3,20 @@
   width: 300px;
 }
 
-/*strong {
-  font-size: .8889rem;
+strong {
+  font-size: .88rem;
+}
+
+.strong-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 210px;
 }
 
 small {
-  font-size: .7778rem;
-}*/
+  font-size: .77rem;
+}
 
 input.search-input {
 	width: calc(100% - 10px);

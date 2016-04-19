@@ -20,7 +20,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
     "fs-styles": "fs-webdev/fs-styles",
-    "oak-ajax-behavior": "familysearchelements/oak-ajax-behavior"
+    "oak-ajax-behavior": "familysearchelements/oak-ajax-behavior",
+    "wc-i18n": "jshcrowthe/wc-i18n#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

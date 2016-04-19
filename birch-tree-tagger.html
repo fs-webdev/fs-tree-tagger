@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../oak-ajax-behavior/oak-ajax-behavior.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../wc-i18n/wc-i18n.html">
 <link rel="import" href="../fs-styles/fs-styles.html">
 
 <!--
@@ -29,6 +30,7 @@ Example:
   <style include='iron-flex fs-styles'></style>
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
+    <wc-i18n-src locale='[[_lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
     <iron-ajax
       id='req'
       method='GET'
@@ -40,11 +42,11 @@ Example:
       <input class='search-input' type="text" value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
-          <div class="layout horizontal center contents justified">
+          <div class="layout horizontal center contents justified" on-click='_handleClick'>
             <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <img alt="" src='[[item.thumbSquareUrl]]' hidden='[[!item.thumbSquareUrl]]' class='round'>
             <div class='flex'>
-              <strong>[[item.name]]</strong><br>
+              <div class='strong-name'><strong>[[item.name]]</strong></div>
               <div hidden='[[!item.pid]]'>
                 <small>[[item.lifespan]]</small>&nbsp;•&nbsp;<small>[[item.pid]]</small>
               </div>
@@ -52,10 +54,10 @@ Example:
           </div>
         </template> 
         <!-- If they are creating a non existing tag -->
-        <div class="layout horizontal center contents justified">
+        <div class="layout horizontal center contents justified" on-click='_handleClick'>
           <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <div class='flex'>
-              <strong>Add New</strong>
+              <strong><wc-i18n key='birch-tree-tagger.add_new'></wc-i18n></strong>
             </div>
         </div>
       </div>
@@ -67,10 +69,18 @@ Example:
       is: 'birch-tree-tagger',
 
       behaviors: [
-        OakAJAXBehavior 
+        OakAJAXBehavior,
+        WCI18nBehavior 
       ],
 
       properties: {
+        /**
+         * The artifact id of the artifact being tagged
+         */
+        artifactId: {
+          type: String,
+          value: ''
+        },
         /**
          * The cis id of the user
          */
@@ -86,12 +96,47 @@ Example:
           value: function() { return [] }
         },
         /**
+         * The height of the tag
+         */
+        height: {
+          type: Number,
+          value: 100
+        },
+        /**
          * The search string
          */
         searchVal: {
           type: String,
           value: '',
           observer: '_updateSearch'
+        },
+        /**
+         * Flag for whether this is a soft tag or not
+         */
+        softTag: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The width of the tag
+         */
+        width: {
+          type: Number,
+          value: 100
+        },
+        /**
+         * The x position of the tag
+         */
+        x: {
+          type: Number,
+          value: 0
+        },
+        /**
+         * The y position of the tag
+         */
+        y: {
+          type: Number,
+          value: 0
         }
       },
       /**
@@ -117,7 +162,40 @@ Example:
             self.$.req.generateRequest();
           }
         },200)
+      },
+
+      _handleClick: function(e) {
+        var tag = {};
+
+        if (!e.model) {
+          console.log(this.searchVal);
+          console.log(this.artifactId);
+        } else {
+          var person = e.model.item;
+          
+          tag.artifactId = this.artifactId;
+          tag.title = person.name;
+          tag.width = this.width;
+          tag.height = this.height;
+          tag.y = this.y;
+          tag.x = this.xd;
+          tag.softTag = this.softTag;
+          if (person.pid) tag.taggedPersonId = person.pid;
+        }
+
+        this._saveTag(tag);
+      },
+
+      _saveTag: function(tag) {
+        fetch(this.ajaxBase + '/artifactManager/artifacts/' + this.artifactId + '/tags/', {
+          method: 'POST',
+          headers: this.authHeaders,
+          body: JSON.stringify(tag)
+        }).then(function(response) {
+          console.log('Status', response.status);
+        })
       }
+
 
     });
   </script>
