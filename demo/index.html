@@ -30,20 +30,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <label>Session Id: </label><input id='input' type="text" on-input='_handleInput'>
       <script>
         var tagger = document.querySelector('birch-tree-tagger');
-        (function() {
-          var app = document.querySelector('#app');
-          tagger.artifactId = 299537;
-          app._handleInput = function() {
-            tagger.sessionId = app.$.input.value;
-          }
-        })()
+        tagger.data = window.testData;
       </script>
     </template>
     <div id="photo" style='width:400px; height:400px; background-color:lightblue; position: absolute; left: 10px'>
       <div id="photoTag-tag_temp" style="width: 100px; height: 100px; background-color: green; position: absolute; left: 30px"></div>
     </div>
 
-    <birch-tree-tagger cis-id='cis.user.MMMM-MM4J'></birch-tree-tagger>
+    <birch-tree-tagger></birch-tree-tagger>
 
   </body>
 </html>

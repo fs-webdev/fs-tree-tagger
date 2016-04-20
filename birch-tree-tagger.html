@@ -43,7 +43,7 @@ Example:
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
-          <div class="layout horizontal center contents justified" on-click='_handleClick'>
+          <div id='listItem[[index]]' class="layout horizontal center contents justified"  on-click='_handleClick'>
             <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <img alt="" src='[[item.thumbSquareUrl]]' hidden='[[!item.thumbSquareUrl]]' class='round'>
             <div class='flex'>
@@ -55,7 +55,7 @@ Example:
           </div>
         </template> 
         <!-- If they are creating a non existing tag -->
-        <div class="layout horizontal center contents justified" on-click='_handleClick'>
+        <div id='[[_computeLastItem(data)]]' class="layout horizontal center contents justified" on-click='_handleClick'>
           <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <div class='flex'>
               <strong><wc-i18n key='birch-tree-tagger.add_new'></wc-i18n></strong>
@@ -119,6 +119,13 @@ Example:
           observer: '_updateSearch'
         },
         /**
+         * The index of the selected item in the list
+         */
+        selected: {
+          type: Number,
+          value: null
+        },
+        /**
          * Flag for whether this is a soft tag or not
          */
         softTag: {
@@ -154,6 +161,13 @@ Example:
         } else {
           this._base = this.ajaxBase;
         }
+        this.listen(window,'keydown', '_handleKeyDown');
+      },
+      /**
+       * Give focus to the search input box
+       */
+      focusInput: function() {
+        this.$.searchBox.focus();
       },
       /**
        * Position the element
@@ -161,6 +175,12 @@ Example:
       position: function(x, y) {
         this.style.left = x + 'px';
         this.style.top = y + 'px';
+      },
+      /**
+       * Computes the index for the 'last' item in the last
+       */
+      _computeLastItem: function(data) {
+        return 'listItem' + data.length;
       },
       /**
        * Handles the response from the server
@@ -179,11 +199,14 @@ Example:
           }
         },200)
       },
-
+      /**
+       * Creates tag information based on the item clicked
+       */
       _handleClick: function(e) {
         var tag = {};
         var img = document.querySelector('#photo');
         var temp = document.querySelector('#photoTag-tag_temp');
+        this.selected = null;
         tag.artifactId = parseInt(this.artifactId);
 
         if (!e.model) {
@@ -200,10 +223,68 @@ Example:
         tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
 
         this._saveTag(tag);
-        this.$.searchBox.value = '';
-        document.querySelector('birch-tree-tagger').classList.add('hidden');
+        this.searchVal = '';
+        document.querySelector('birch-tree-tagger').classList.add('hiding');
       },
+      /**
+       * Decided what happens when keys are pressed
+       */
+      _handleKeyDown: function(e) {
+        if (e.keyCode == 40) {
+          this._selectDown();
+        } else if (e.keyCode == 38) {
+          this._selectUp();
+        } else if (e.keyCode == 13) {
+          this._selectEnter();
+        } else {
+          return;
+        }
+      },
+      /**
+       * Pressing enter with an item selected will create a tag
+       */
+      _selectEnter: function() {
+        if (this.selected) {
+          this.$$('#listItem' + this.selected).click();
+        }
+      },
+      /**
+       * Selects the next item up in the list
+       */
+      _selectUp: function() {
+        if (this.selected == null || this.selected == 0) {
+          this.selected = this.data.length;
+        } else {
+          this.selected -= 1;
+        }
 
+        this.$$('#listItem'+ this.selected).classList.add('selected');
+        if (this.selected == this.data.length) {
+          this.$$('#listItem0').classList.remove('selected');
+        } else {
+          this.$$('#listItem' + (this.selected + 1)).classList.remove('selected');
+        }
+      },
+      /**
+       * Selects the next item down in the list
+       */
+      _selectDown: function() {
+        if (this.selected == null || this.selected == this.data.length) {
+          this.selected = 0;
+        } else {
+          this.selected += 1;
+        }
+
+        this.$$('#listItem'+ this.selected).classList.add('selected');
+        if (this.selected == 0) {
+          this.$$('#listItem' + this.data.length).classList.remove('selected');
+        } else {
+          this.$$('#listItem' + (this.selected - 1)).classList.remove('selected');
+        }
+      },
+      /**
+       * Sends the tag information to the database to save the tag
+       */
       _saveTag: function(tag) {
         var self = this;
         fetch(location.origin + '/artifactManager/artifacts/' + this.artifactId + '/tags/', {
@@ -212,11 +293,15 @@ Example:
           body: JSON.stringify(tag)
         }).then(function(response) {
           console.log('Status', response.status);
-          self.fire('save-tag-success', tag);
+          if (response.status == 200) {
+            return response.json();
+          } else {
+            self.fire('tag-save-cancel');
+          }
+        }).then(function(result) {
+          self.fire('save-tag-success', result);
         })
       }
-
-
     });
   </script>
 </dom-module>

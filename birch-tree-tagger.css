@@ -76,6 +76,10 @@ input.search-input {
 	cursor: pointer;
 }
 
+.selected {
+  background-color: #f4f4f4;
+}
+
 .round {
 	border: 1px solid #bab7b1;
 	border-radius: 50%;
