@@ -23,8 +23,23 @@ input.search-input {
 	margin: 5px;
 }
 
+.spinner {
+  -webkit-animation: rotate 1s infinite steps(12);
+  animation: rotate 1s infinite steps(12);
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  opacity: 0;
+  z-index: 2;
+  position:relative;
+  top: 32px;
+  left: 260px;
+  background-size: contain;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20version%3D%221.2%22%20baseProfile%3D%22tiny%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22128%22%20height%3D%22128%22%20viewBox%3D%220%200%20128%20128%22%20xml%3Aspace%3D%22preserve%22%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2264%22%20y1%3D%228.1%22%20x2%3D%2264%22%20y2%3D%2227.8%22%20opacity%3D%220.1%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2236.1%22%20y1%3D%2215.6%22%20x2%3D%2245.9%22%20y2%3D%2232.6%22%20opacity%3D%220.91%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2215.6%22%20y1%3D%2236.1%22%20x2%3D%2232.6%22%20y2%3D%2245.9%22%20opacity%3D%220.83%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%228.1%22%20y1%3D%2264%22%20x2%3D%2227.8%22%20y2%3D%2264%22%20opacity%3D%220.74%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2215.6%22%20y1%3D%2291.9%22%20x2%3D%2232.6%22%20y2%3D%2282.1%22%20opacity%3D%220.66%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2236.1%22%20y1%3D%22112.4%22%20x2%3D%2245.9%22%20y2%3D%2295.4%22%20opacity%3D%220.58%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2264%22%20y1%3D%22119.9%22%20x2%3D%2264%22%20y2%3D%22100.2%22%20opacity%3D%220.49%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2291.9%22%20y1%3D%22112.4%22%20x2%3D%2282.1%22%20y2%3D%2295.4%22%20opacity%3D%220.41%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%22112.4%22%20y1%3D%2291.9%22%20x2%3D%2295.4%22%20y2%3D%2282.1%22%20opacity%3D%220.33%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%22119.9%22%20y1%3D%2264%22%20x2%3D%22100.2%22%20y2%3D%2264%22%20opacity%3D%220.24%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%22112.4%22%20y1%3D%2236.1%22%20x2%3D%2295.4%22%20y2%3D%2245.9%22%20opacity%3D%220.16%22%2F%3E%3Cline%20fill%3D%22none%22%20stroke%3D%22%23333331%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%20stroke-miterlimit%3D%2210%22%20x1%3D%2291.9%22%20y1%3D%2215.6%22%20x2%3D%2282.1%22%20y2%3D%2232.6%22%20opacity%3D%220.08%22%2F%3E%3C%2Fsvg%3E");
+}
+
 .results-list {
-	position: relative;
+	position: absolute;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);

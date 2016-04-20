@@ -39,6 +39,7 @@ Example:
       headers='[[authHeaders]]'
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
+    <i class='spinner'></i>
     <div class="results-list">
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
@@ -88,6 +89,14 @@ Example:
         _base: {
           type: String,
           value: ''
+        },
+        /**
+         * A flag for when the component is busy
+         */
+        _busy: {
+          type: Boolean,
+          value: false,
+          observer: '_updateSpinner'
         },
         /**
          * The cis id of the user
@@ -186,6 +195,7 @@ Example:
        * Handles the response from the server
        */
       _handleReq: function(e) {
+        this._busy = false;
         this.data = e.detail.response;
       },
       /**
@@ -195,6 +205,7 @@ Example:
         var self = this;
         this.debounce('birch-tree-tagger-search-update', function() {
           if (val) {
+            self._busy = true;
             self.$.req.generateRequest();
           }
         },200)
@@ -207,6 +218,7 @@ Example:
         var img = document.querySelector('#photo');
         var temp = document.querySelector('#photoTag-tag_temp');
         this.selected = null;
+        this.$$('.selected').classList.remove('selected');
         tag.artifactId = parseInt(this.artifactId);
 
         if (!e.model) {
@@ -231,11 +243,11 @@ Example:
        */
       _handleKeyDown: function(e) {
         if (e.keyCode == 40) {
-          this._selectDown();
+          this._selectDown(e);
         } else if (e.keyCode == 38) {
-          this._selectUp();
+          this._selectUp(e);
         } else if (e.keyCode == 13) {
-          this._selectEnter();
+          this._selectEnter(e);
         } else {
           return;
         }
@@ -243,15 +255,20 @@ Example:
       /**
        * Pressing enter with an item selected will create a tag
        */
-      _selectEnter: function() {
-        if (this.selected) {
+      _selectEnter: function(e) {
+        e.preventDefault();
+        this._busy = true;
+        if (this.selected != null) {
           this.$$('#listItem' + this.selected).click();
+          this.selected = null;
+          this.$$('.selected').classList.remove('selected');
         }
       },
       /**
        * Selects the next item up in the list
        */
-      _selectUp: function() {
+      _selectUp: function(e) {
+        e.preventDefault();
         if (this.selected == null || this.selected == 0) {
           this.selected = this.data.length;
         } else {
@@ -268,7 +285,8 @@ Example:
       /**
        * Selects the next item down in the list
        */
-      _selectDown: function() {
+      _selectDown: function(e) {
+        e.preventDefault();
         if (this.selected == null || this.selected == this.data.length) {
           this.selected = 0;
         } else {
@@ -296,11 +314,20 @@ Example:
           if (response.status == 200) {
             return response.json();
           } else {
+            self._busy = false;
             self.fire('tag-save-cancel');
           }
         }).then(function(result) {
+          self._busy = false;
           self.fire('save-tag-success', result);
         })
+      },
+      _updateSpinner: function() {
+        if (this._busy) {
+          this.$$('.spinner').style.opacity = 1;
+        } else {
+          this.$$('.spinner').style.opacity = 0;
+        }  
       }
     });
   </script>
