@@ -40,7 +40,7 @@ Example:
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
     <div class="results-list">
-      <input class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
+      <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
           <div class="layout horizontal center contents justified" on-click='_handleClick'>
@@ -182,33 +182,37 @@ Example:
 
       _handleClick: function(e) {
         var tag = {};
+        var img = document.querySelector('#photo');
+        var temp = document.querySelector('#photoTag-tag_temp');
+        tag.artifactId = parseInt(this.artifactId);
 
         if (!e.model) {
-          console.log(this.searchVal);
-          console.log(this.artifactId);
+          tag.title = this.searchVal;
         } else {
-          var person = e.model.item;
-          
-          tag.artifactId = this.artifactId;
+          var person = e.model.item;       
           tag.title = person.name;
-          tag.width = this.width;
-          tag.height = this.height;
-          tag.y = this.y;
-          tag.x = this.xd;
-          tag.softTag = this.softTag;
-          if (person.pid) tag.taggedPersonId = person.pid;
+          if (person.pid) tag.taggedPersonId = person.mpid;
         }
+        tag.softTag = this.softTag;
+        tag.width = temp.offsetWidth / img.offsetWidth;
+        tag.height = temp.offsetHeight / img.offsetHeight;
+        tag.x = parseInt(temp.style.left,10) / img.offsetWidth;
+        tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
 
         this._saveTag(tag);
+        this.$.searchBox.value = '';
+        document.querySelector('birch-tree-tagger').classList.add('hidden');
       },
 
       _saveTag: function(tag) {
-        fetch(this.ajaxBase + '/artifactManager/artifacts/' + this.artifactId + '/tags/', {
+        var self = this;
+        fetch(location.origin + '/artifactManager/artifacts/' + this.artifactId + '/tags/', {
           method: 'POST',
           headers: this.authHeaders,
           body: JSON.stringify(tag)
         }).then(function(response) {
           console.log('Status', response.status);
+          self.fire('save-tag-success', tag);
         })
       }
 
