@@ -119,6 +119,12 @@ Example:
           type: Number,
           value: 100
         },
+
+        modal: {
+          type: Boolean,
+          value: false,
+          observer: '_modalCheck'
+        },
         /**
          * The search string
          */
@@ -190,6 +196,8 @@ Example:
        */
       clearList: function() {
         this.searchVal = '';
+        if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
+        this.selected = null;
       },
       /**
        * Computes the index for the 'last' item in the last
@@ -241,7 +249,7 @@ Example:
         tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
 
         this._saveTag(tag);
-        this.searchVal = '';
+        this.clearList();
         document.querySelector('birch-tree-tagger').classList.add('hiding');
       },
       /**
@@ -256,6 +264,16 @@ Example:
           this._selectEnter(e);
         } else {
           return;
+        }
+      },
+      _modalCheck: function(modal) {
+        var el = this.$.resultList;
+        if (modal) {
+          if (el.classList.contains('results-list')) el.classList.remove('results-list')
+          el.classList.add('results-list-modal')
+        } else {
+          if (el.classList.contains('results-list-modal')) el.classList.remove('results-list-modal')
+          el.classList.add('results-list')
         }
       },
       /**
