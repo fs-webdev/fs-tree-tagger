@@ -39,7 +39,7 @@ Example:
       headers='[[authHeaders]]'
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
-    <i class='spinner'></i>
+    <i id='busySpinner' class='spinner'></i>
     <div id='resultList' class="results-list">
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
@@ -100,7 +100,7 @@ Example:
         },
         category: {
           type: String,
-          value: '',
+          value: 'IMAGE',
           observer: '_updateCategory'
         },
         /**
@@ -243,8 +243,7 @@ Example:
        */
       _handleClick: function(e) {
         var tag = {};
-        var img = document.querySelector('#photo');
-        var temp = document.querySelector('#photoTag-tag_temp');
+        
         this.selected = null;
         this.$$('.selected').classList.remove('selected');
         tag.artifactId = parseInt(this.artifactId);
@@ -257,11 +256,16 @@ Example:
           if (person.pid) tag.taggedPersonId = person.mpid;
         }
         tag.softTag = this.softTag;
-        tag.width = temp.offsetWidth / img.offsetWidth;
-        tag.height = temp.offsetHeight / img.offsetHeight;
-        tag.x = parseInt(temp.style.left,10) / img.offsetWidth;
-        tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
+        if (this.category === 'IMAGE') {
+          var img = document.querySelector('#photo');
+          var temp = document.querySelector('#photoTag-tag_temp');
+          tag.width = temp.offsetWidth / img.offsetWidth;
+          tag.height = temp.offsetHeight / img.offsetHeight;
+          tag.x = parseInt(temp.style.left,10) / img.offsetWidth;
+          tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
+        }
 
+        this.fire('tag-save-waiting');
         this._saveTag(tag);
         this.clearList();
         document.querySelector('birch-tree-tagger').classList.add('hiding');
@@ -282,12 +286,17 @@ Example:
       },
       _modalCheck: function(modal) {
         var el = this.$.resultList;
+        var spinner = this.$.busySpinner;
         if (modal) {
           if (el.classList.contains('results-list')) el.classList.remove('results-list')
           el.classList.add('results-list-modal')
+          spinner.classList.contains('spinner-fixed') && spinner.classList.remove('spinner-fixed');
+          spinner.classList.add('spinner-modal');
         } else {
           if (el.classList.contains('results-list-modal')) el.classList.remove('results-list-modal')
           el.classList.add('results-list')
+          spinner.classList.contains('spinner-modal') && spinner.classList.remove('spinner-modal');
+          spinner.classList.add('spinner-fixed');
         }
       },
       /**
@@ -299,7 +308,7 @@ Example:
         if (this.selected != null) {
           this.$$('#listItem' + this.selected).click();
           this.selected = null;
-          this.$$('.selected').classList.remove('selected');
+          this.$$('.selected') && this.$$('.selected').classList.remove('selected');
         }
       },
       /**
@@ -357,7 +366,12 @@ Example:
           }
         }).then(function(result) {
           self._busy = false;
-          self.fire('save-tag-success', result);
+          if (self.softTag) {
+            self.fire('addTag', result);
+          } else {
+            self.fire('save-tag-success', result);
+          }
+          
         })
       },
       _updateSpinner: function() {
