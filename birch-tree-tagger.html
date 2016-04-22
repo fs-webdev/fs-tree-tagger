@@ -31,7 +31,7 @@ Example:
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
     <wc-i18n-src locale='[[_lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
-    <wc-i18n key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>    
+    <wc-i18n id='searchPlaceholder' key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>    
     <iron-ajax
       id='req'
       method='GET'
@@ -40,7 +40,7 @@ Example:
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
     <i class='spinner'></i>
-    <div class="results-list">
+    <div id='resultList' class="results-list">
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
@@ -98,6 +98,11 @@ Example:
           value: false,
           observer: '_updateSpinner'
         },
+        category: {
+          type: String,
+          value: '',
+          observer: '_updateCategory'
+        },
         /**
          * The cis id of the user
          */
@@ -119,7 +124,9 @@ Example:
           type: Number,
           value: 100
         },
-
+        /**
+         * Flag for modal or fixed implementation
+         */
         modal: {
           type: Boolean,
           value: false,
@@ -211,6 +218,13 @@ Example:
       _handleReq: function(e) {
         this._busy = false;
         this.data = e.detail.response;
+      },
+      _updateCategory: function(category) {
+        if (category === 'AUDIO') {
+          this.$.searchPlaceholder.setAttribute('key','birch-tree-tagger.audio')
+        } else if (category === 'PDF') {
+          this.$.searchPlaceholder.setAttribute('key','birch-tree-tagger.doc')
+        }
       },
       /**
        * Make a request to the server as the search value changes

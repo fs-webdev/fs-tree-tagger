@@ -1,4 +1,7 @@
 {
 	"add_new":"Add New",
-	"who_is": "Who is this?"
+	"who_is": "Who is this?",
+	"audio": "Who is in this audio?",
+	"story": "Who is in this story?",
+	"doc": "Who is in this document?"
 }
