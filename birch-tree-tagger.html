@@ -210,7 +210,12 @@ Example:
        * Computes the index for the 'last' item in the last
        */
       _computeLastItem: function(data) {
-        return 'listItem' + data.length;
+        if (data.length) {
+          return 'listItem' + data.length;
+        } else {
+          return 'listItem0';
+        }
+        
       },
       /**
        * Handles the response from the server
@@ -231,6 +236,7 @@ Example:
        */
       _updateSearch: function(val) {
         var self = this;
+        this.selected = null;
         this.debounce('birch-tree-tagger-search-update', function() {
           if (val) {
             self._busy = true;
@@ -274,11 +280,11 @@ Example:
        * Decided what happens when keys are pressed
        */
       _handleKeyDown: function(e) {
-        if (e.keyCode == 40) {
+        if (e.keyCode == 40 !this._busy) {
           this._selectDown(e);
-        } else if (e.keyCode == 38) {
+        } else if (e.keyCode == 38 !this._busy) {
           this._selectUp(e);
-        } else if (e.keyCode == 13) {
+        } else if (e.keyCode == 13 !this._busy) {
           this._selectEnter(e);
         } else {
           return;
@@ -342,7 +348,7 @@ Example:
         e.preventDefault();
         if (this.selected == null || this.selected == this.data.length) {
           this.selected = 0;
-        } else {
+        } else if (this.data.length > 0) {
           this.selected += 1;
         }
 
@@ -357,7 +363,7 @@ Example:
 
         if (this.selected == 0) {
           this.$$('#listItem' + this.data.length).classList.remove('selected');
-        } else {
+        } else if (this.data.length > 0) {
           this.$$('#listItem' + (this.selected - 1)).classList.remove('selected');
         }
       },
