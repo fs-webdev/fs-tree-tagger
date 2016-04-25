@@ -2,24 +2,18 @@
   width: 300px;
 }
 
-strong {
-  font-size: .88rem;
-}
-
 .strong-name {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   max-width: 210px;
-}
-
-small {
-  font-size: .77rem;
+  font-weight: bold;
+  color: #333331;
 }
 
 input.search-input {
-	width: calc(100% - 10px);
-	margin: 5px;
+  width: calc(100% - 10px);
+  margin: 5px;
 }
 
 .spinner {
@@ -56,7 +50,7 @@ input.search-input {
 }
 
 .results-list-modal {
-	position: absolute;
+  position: absolute;
   left: 0px;
   background: #fff;
   border-radius: 4px;
@@ -68,7 +62,7 @@ input.search-input {
 }
 
 .results-list-modal:before {
-	background: #fff;
+  background: #fff;
   border-radius: 4px;
   bottom: 0;
   content: '';
@@ -80,7 +74,7 @@ input.search-input {
 }
 
 .results-list-modal:after {
-	 background: #fff;
+   background: #fff;
   top: -10px;
   box-shadow: 1px 0px 4px 1px rgba(0,0,0,0.35), 0px 0px 2px 0px rgba(0,0,0,0.18);
   content: '';
@@ -99,14 +93,15 @@ input.search-input {
 }
 
 .contents {
-	padding: 10px;
-	padding-left: 0px;
-	border-top: 1px solid #bab7b1;
+  padding: 10px;
+  padding-left: 0px;
+  border-top: 1px solid #bab7b1;
+  text-align: left;
 }
 
 .contents:hover {
-	background-color: #f4f4f4;
-	cursor: pointer;
+  background-color: #f4f4f4;
+  cursor: pointer;
 }
 
 .selected {
@@ -114,8 +109,8 @@ input.search-input {
 }
 
 .round {
-	border: 1px solid #bab7b1;
-	border-radius: 50%;
+  border: 1px solid #bab7b1;
+  border-radius: 50%;
   overflow: hidden;
   width: 50px;
   height: 50px;
@@ -129,4 +124,3 @@ input.search-input {
   height: 50px;
   margin: 0px 10px;
 }
-
