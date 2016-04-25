@@ -251,7 +251,7 @@ Example:
         var tag = {};
         
         this.selected = null;
-        this.$$('.selected').classList.remove('selected');
+        if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
         tag.artifactId = parseInt(this.artifactId);
 
         if (!e.model) {
@@ -361,7 +361,7 @@ Example:
         }
         
 
-        if (this.selected == 0) {
+        if (this.selected == 0 && this.data.length > 0) {
           this.$$('#listItem' + this.data.length).classList.remove('selected');
         } else if (this.data.length > 0) {
           this.$$('#listItem' + (this.selected - 1)).classList.remove('selected');
