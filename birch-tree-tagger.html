@@ -280,11 +280,11 @@ Example:
        * Decided what happens when keys are pressed
        */
       _handleKeyDown: function(e) {
-        if (e.keyCode == 40 !this._busy) {
+        if (e.keyCode == 40 && !this._busy) {
           this._selectDown(e);
-        } else if (e.keyCode == 38 !this._busy) {
+        } else if (e.keyCode == 38 && !this._busy) {
           this._selectUp(e);
-        } else if (e.keyCode == 13 !this._busy) {
+        } else if (e.keyCode == 13 && !this._busy) {
           this._selectEnter(e);
         } else {
           return;
