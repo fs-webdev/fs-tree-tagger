@@ -323,6 +323,12 @@ Example:
         }
 
         this.$$('#listItem'+ this.selected).classList.add('selected');
+        if (this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded) {
+          this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded();
+        } else {
+          this.$$('#listItem'+ this.selected).scrollIntoView();  
+        }
+
         if (this.selected == this.data.length) {
           this.$$('#listItem0').classList.remove('selected');
         } else {
@@ -340,7 +346,15 @@ Example:
           this.selected += 1;
         }
 
+
         this.$$('#listItem'+ this.selected).classList.add('selected');
+        if (this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded) {
+          this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded();
+        } else {
+          this.$$('#listItem'+ this.selected).scrollIntoView(false);  
+        }
+        
+
         if (this.selected == 0) {
           this.$$('#listItem' + this.data.length).classList.remove('selected');
         } else {
