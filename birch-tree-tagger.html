@@ -184,6 +184,15 @@ Example:
           this._base = this.ajaxBase;
         }
         this.listen(window,'keydown', '_handleKeyDown');
+        this.listen(document, 'click', '_documentClick');
+      },
+      /**
+       * If the user clicks outside the list we should clear the list
+       */
+      _documentClick: function(e) {
+        if (!this.contains(e.target)) {
+         this.clearList();
+        }
       },
       /**
        * Give focus to the search input box
@@ -286,6 +295,8 @@ Example:
           this._selectUp(e);
         } else if (e.keyCode == 13 && !this._busy) {
           this._selectEnter(e);
+        } else if (e.keyCode == 27) {
+          this.clearList();
         } else {
           return;
         }
