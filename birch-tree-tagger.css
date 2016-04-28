@@ -109,7 +109,7 @@ input.search-input {
 }
 
 .round {
-  border: 1px solid #bab7b1;
+  border: 2px solid #bab7b1;
   border-radius: 50%;
   overflow: hidden;
   width: 50px;
