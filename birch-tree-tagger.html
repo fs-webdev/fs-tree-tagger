@@ -383,7 +383,7 @@ Example:
        */
       _saveTag: function(tag) {
         var self = this;
-        fetch(location.origin + '/artifactManager/artifacts/' + this.artifactId + '/tags/', {
+        fetch(location.origin + '/artifactmanager/artifacts/' + this.artifactId + '/tags/', {
           method: 'POST',
           headers: this.authHeaders,
           body: JSON.stringify(tag)
