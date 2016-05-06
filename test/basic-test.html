@@ -124,6 +124,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           })       
         })
+
+        test('Set the appropriate class to result list', function() {
+          myEl.modal = true;
+          var results = Polymer.dom(myEl.root).querySelector('#resultList');
+          var spinner = Polymer.dom(myEl.root).querySelector('#busySpinner');
+          expect(results.classList.contains('results-list-modal')).to.be.true;
+          expect(results.classList.contains('results-list')).to.be.false;
+          expect(spinner.classList.contains('spinner-modal')).to.be.true;
+          expect(spinner.classList.contains('spinner-fixed')).to.be.false;
+        })
       });
     </script>
   </body>
