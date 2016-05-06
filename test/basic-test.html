@@ -25,28 +25,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <img id='photo' src="http://lorempixel.com/400/200" alt="">
     <img id='photoTag-tag_temp' src="http://lorempixel.com/200/200" alt="">
     <!-- You can use the document as a place to set up your fixtures. -->
-    <test-fixture id="birch-tree-tagger-fixture">
-      <template>
-        <birch-tree-tagger>
-        </birch-tree-tagger>
-      </template>
-    </test-fixture>
+    <!-- Pull the component out of the fixture to fix weird querying issue -->
+    <birch-tree-tagger id='myEl'>
+    </birch-tree-tagger>
 
     <script>
       suite('<birch-tree-tagger>', function() {
         var myEl;
 
         setup(function() {
-          myEl = fixture('birch-tree-tagger-fixture');
+          myEl = document.getElementById('myEl')
+          myEl.data = window.testData;
+          myEl.artifactId = '123'
         });
 
         test('Clicking an item will create a tag',function(done) {
           var input;
-          myEl.artifactId = '123'
-
-          flush(function() {
-            myEl.data = window.testData;
-          })
           
           input = Polymer.dom(myEl.root).querySelector('input');
           input.value = 'a'
@@ -64,6 +58,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           })          
         })
+
+        test('Key down selecting', function(done) {
+          input = Polymer.dom(myEl.root).querySelector('input');
+          input.value = 'a'
+          function fireKey(el) {
+            var eventObj = document.createEvent('Events');
+            eventObj.initEvent('input', true, true);
+            el.dispatchEvent(eventObj);
+          }
+          fireKey(input);
+          myEl.selected = 0;
+          // Siumlate keydown
+          var event = new Event('keydown')
+          event.keyCode = 40;
+
+          flush(function() {
+            window.dispatchEvent(event);
+            expect(myEl.selected).to.equal(1);
+            done();
+          })       
+        })
+
+        test('Key up selecting', function(done) {
+          input = Polymer.dom(myEl.root).querySelector('input');
+          input.value = 'a'
+          function fireKey(el) {
+            var eventObj = document.createEvent('Events');
+            eventObj.initEvent('input', true, true);
+            el.dispatchEvent(eventObj);
+          }
+          fireKey(input);
+          myEl.selected = 1;
+          // Siumlate  keydown
+          var event = new Event('keydown')
+          event.keyCode = 38;
+
+          flush(function() {
+            window.dispatchEvent(event);
+            expect(myEl.selected).to.equal(0);
+            done();
+          })       
+        })
+
       });
     </script>
   </body>

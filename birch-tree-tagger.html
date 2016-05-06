@@ -339,17 +339,21 @@ Example:
           this.selected -= 1;
         }
 
-        this.$$('#listItem'+ this.selected).classList.add('selected');
-        if (this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded) {
-          this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded();
+        var selectedItem = this.$$('#listItem'+ this.selected);
+        selectedItem.classList.add('selected');
+        if (selectedItem.scrollIntoViewIfNeeded) {
+          selectedItem.scrollIntoViewIfNeeded();
         } else {
-          this.$$('#listItem'+ this.selected).scrollIntoView();  
+          selectedItem.scrollIntoView();  
         }
 
+        var selectedFirst = this.$$('#listItem0');
+        var selectedNext = this.$$('#listItem' + (this.selected + 1));
+
         if (this.selected == this.data.length) {
-          this.$$('#listItem0').classList.remove('selected');
+          if (selectedFirst) selectedFirst.classList.remove('selected');
         } else {
-          this.$$('#listItem' + (this.selected + 1)).classList.remove('selected');
+          if (selectedNext) selectedNext.classList.remove('selected');
         }
       },
       /**
@@ -362,20 +366,23 @@ Example:
         } else if (this.data.length > 0) {
           this.selected += 1;
         }
-
-
-        this.$$('#listItem'+ this.selected).classList.add('selected');
-        if (this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded) {
-          this.$$('#listItem'+ this.selected).scrollIntoViewIfNeeded();
-        } else {
-          this.$$('#listItem'+ this.selected).scrollIntoView(false);  
+        var selectedItem = this.$$('#listItem'+ this.selected)
+        if (selectedItem) {
+          selectedItem.classList.add('selected');
+          if (selectedItem.scrollIntoViewIfNeeded) {
+            selectedItem.scrollIntoViewIfNeeded();
+          } else {
+            selectedItem.scrollIntoView(false);  
+          }
         }
-        
+
+        var selectedLast =  this.$$('#listItem' + this.data.length);
+        var selectedSecondLast = this.$$('#listItem' + (this.selected - 1))
 
         if (this.selected == 0 && this.data.length > 0) {
-          this.$$('#listItem' + this.data.length).classList.remove('selected');
+          if (selectedLast) selectedLast.classList.remove('selected');
         } else if (this.data.length > 0) {
-          this.$$('#listItem' + (this.selected - 1)).classList.remove('selected');
+          if (selectedSecondLast) selectedSecondLast.classList.remove('selected');
         }
       },
       /**
