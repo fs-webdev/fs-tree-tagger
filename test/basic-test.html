@@ -15,58 +15,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
+    <script src="../demo/data.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../birch-tree-tagger.html">
   </head>
   <body>
-
+    <!-- Add elements to prevent functions from throwing errors -->
+    <img id='photo' src="http://lorempixel.com/400/200" alt="">
+    <img id='photoTag-tag_temp' src="http://lorempixel.com/200/200" alt="">
     <!-- You can use the document as a place to set up your fixtures. -->
     <test-fixture id="birch-tree-tagger-fixture">
       <template>
         <birch-tree-tagger>
-          <h2>birch-tree-tagger</h2>
         </birch-tree-tagger>
       </template>
     </test-fixture>
 
     <script>
       suite('<birch-tree-tagger>', function() {
-
         var myEl;
 
         setup(function() {
           myEl = fixture('birch-tree-tagger-fixture');
         });
 
-        test('defines the "author" property', function() {
-          assert.equal(myEl.author.name, 'Dimitri Glazkov');
-          assert.equal(myEl.author.image, 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg');
-        });
+        test('Clicking an item will create a tag',function(done) {
+          var input;
+          myEl.artifactId = '123'
 
-        test('says hello', function() {
-          assert.equal(myEl.sayHello(), 'birch-tree-tagger says, Hello World!');
+          flush(function() {
+            myEl.data = window.testData;
+          })
+          
+          input = Polymer.dom(myEl.root).querySelector('input');
+          input.value = 'a'
+          function fireKey(el) {
+            var eventObj = document.createEvent('Events');
+            eventObj.initEvent('input', true, true);
+            el.dispatchEvent(eventObj);
+          }
+          fireKey(input);
 
-          var greetings = myEl.sayHello('greetings Earthlings');
-          assert.equal(greetings, 'birch-tree-tagger says, greetings Earthlings');
-        });
-
-        test('fires lasers', function(done) {
-          myEl.addEventListener('birch-tree-tagger-lasers', function(event) {
-            assert.equal(event.detail.sound, 'Pew pew!');
+          flush(function() {
+            var spy = sinon.spy(myEl, '_saveTag')
+            Polymer.dom(myEl.root).querySelector('#listItem0').click();
+            expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON')
             done();
-          });
-          myEl.fireLasers();
-        });
-
-        test('distributed children', function() {
-          var els = myEl.getContentChildren();
-          assert.equal(els.length, 1, 'one distributed node');
-          assert.equal(els[0], myEl.querySelector('h2'), 'content distributed correctly');
-        });
-
+          })          
+        })
       });
     </script>
-
   </body>
 </html>
