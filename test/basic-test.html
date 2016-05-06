@@ -55,6 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var spy = sinon.spy(myEl, '_saveTag')
             Polymer.dom(myEl.root).querySelector('#listItem0').click();
             expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON')
+            spy.restore();
             done();
           })          
         })
@@ -101,6 +102,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           })       
         })
 
+        test('Select with enter key', function(done) {
+          input = Polymer.dom(myEl.root).querySelector('input');
+          input.value = 'a'
+          function fireKey(el) {
+            var eventObj = document.createEvent('Events');
+            eventObj.initEvent('input', true, true);
+            el.dispatchEvent(eventObj);
+          }
+          fireKey(input);
+          myEl.selected = 1;
+          // Siumlate  keydown
+          var event = new Event('keydown')
+          event.keyCode = 13;
+
+          flush(function() {
+            var spy = sinon.spy(myEl, '_saveTag')
+            window.dispatchEvent(event);
+            expect(spy.getCall(0).args[0].title).to.equal('Denia Byreleah Tharp')
+            spy.restore();
+            done();
+          })       
+        })
       });
     </script>
   </body>
