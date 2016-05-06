@@ -14,6 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wc-i18n/wc-i18n.html">
 <link rel="import" href="../fs-styles/fs-styles.html">
+<link rel="import" href="../fetch/fetch.html">
 
 <!--
 An element that provides autocomplete suggestions for tagging to the tree
@@ -262,7 +263,6 @@ Example:
         this.selected = null;
         if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
         tag.artifactId = parseInt(this.artifactId);
-
         if (!e.model) {
           tag.title = this.searchVal;
         } else {
