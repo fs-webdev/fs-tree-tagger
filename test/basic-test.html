@@ -40,30 +40,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           myEl = fixture('birch-tree-tagger-fixture');
         });
 
-        test('Clicking an item will create a tag',function(done) {
-          var input;
-          myEl.artifactId = '123'
-
-          flush(function() {
-            myEl.data = window.testData;
-          })
-          
-          input = Polymer.dom(myEl.root).querySelector('input');
-          input.value = 'a'
-          function fireKey(el) {
-            var eventObj = document.createEvent('Events');
-            eventObj.initEvent('input', true, true);
-            el.dispatchEvent(eventObj);
-          }
-          fireKey(input);
-
-          flush(function() {
-            var spy = sinon.spy(myEl, '_saveTag')
-            Polymer.dom(myEl.root).querySelector('#listItem0').click();
-            expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON')
-            done();
-          })          
+        test('Ready function sets the _base', function() {
+          expect(myEl._base).to.equal('https://integration.familysearch.org');
         })
+
+        test('_documentClick clears the list', function() {
+          var clearListSpy = sinon.spy(myEl, 'clearList');
+          var event = new Event('click');
+          myEl._documentClick(event);
+          expect(clearListSpy.calledOnce).to.be.true;
+        })
+
+        test('focusInput will focus the searchBox', function() {
+          myEl.focusInput();
+          expect(Polymer.dom(myEl.root).querySelector('#searchBox')).to.equal(Polymer.dom(myEl.root).activeElement)
+        })
+
+        test('Position will place the element in the proper position', function() {
+          myEl.position(200, 200);
+          expect(myEl.style.left).to.equal('200px');
+          expect(myEl.style.top).to.equal('200px');
+        })
+
+        test('Clear list and remove selected class from list item', function(done) {
+          myEl.searchVal = 'abc';
+          expect(myEl.searchVal).to.equal('abc');
+          myEl.data = window.testData;
+          var inputEvent = new Event('input');
+          Polymer.dom(myEl.root).querySelector('input').dispatchEvent(inputEvent)
+          
+          flush(function() {
+            Polymer.dom(myEl.root).querySelector('#listItem0').classList.add('selected')
+            myEl.selected = 0;
+            myEl.clearList();
+            expect(myEl.searchVal).to.equal('');
+            expect(myEl.selected).to.equal(null);
+            expect(Polymer.dom(myEl.root).querySelector('#listItem0').classList.contains('selected')).to.be.false
+            done();
+          })
+        })
+
+        test('Compute the index for the last item', function() {
+          expect(myEl._computeLastItem({})).to.equal('listItem0')
+          expect(myEl._computeLastItem(window.testData)).to.equal('listItem5')
+        })
+
+        test('Handle request', function() {
+          myEl._busy = true;
+          myEl._handleReq({ 'detail': { 'response': window.testData } })
+          expect(myEl._busy).to.be.false;
+          expect(myEl.data).to.equal(window.testData);
+        })
+
       });
     </script>
   </body>
