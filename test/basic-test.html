@@ -40,29 +40,143 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           myEl = fixture('birch-tree-tagger-fixture');
         });
 
-        test('Clicking an item will create a tag',function(done) {
-          var input;
-          myEl.artifactId = '123'
+        test('Ready function sets the _base', function() {
+          expect(myEl._base).to.equal('https://integration.familysearch.org');
+        })
 
-          flush(function() {
-            myEl.data = window.testData;
-          })
+        test('Clicking the document clears the list', function() {
+          var clearListSpy = sinon.spy(myEl, 'clearList');
+          var event = new Event('click');
+          myEl._documentClick(event);
+          expect(clearListSpy.calledOnce).to.be.true;
+        })
+
+        test('focusInput will focus the searchBox', function() {
+          myEl.focusInput();
+          expect(Polymer.dom(myEl.root).querySelector('#searchBox')).to.equal(Polymer.dom(myEl.root).activeElement)
+        })
+
+        test('Position will place the element in the proper position', function() {
+          myEl.position(200, 200);
+          expect(myEl.style.left).to.equal('200px');
+          expect(myEl.style.top).to.equal('200px');
+        })
+
+        test('Clear list and remove selected class from list item', function(done) {
+          myEl.searchVal = 'abc';
+          expect(myEl.searchVal).to.equal('abc');
+          myEl.data = window.testData;
+          var inputEvent = new Event('input');
+          Polymer.dom(myEl.root).querySelector('input').dispatchEvent(inputEvent)
           
-          input = Polymer.dom(myEl.root).querySelector('input');
-          input.value = 'a'
-          function fireKey(el) {
-            var eventObj = document.createEvent('Events');
-            eventObj.initEvent('input', true, true);
-            el.dispatchEvent(eventObj);
-          }
-          fireKey(input);
-
           flush(function() {
-            var spy = sinon.spy(myEl, '_saveTag')
-            Polymer.dom(myEl.root).querySelector('#listItem0').click();
-            expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON')
+            Polymer.dom(myEl.root).querySelector('#listItem0').classList.add('selected')
+            myEl.selected = 0;
+            myEl.clearList();
+            expect(myEl.searchVal).to.equal('');
+            expect(myEl.selected).to.equal(null);
+            expect(Polymer.dom(myEl.root).querySelector('#listItem0').classList.contains('selected')).to.be.false
             done();
-          })          
+          })
+        })
+
+        test('Compute the index for the last item', function() {
+          expect(myEl._computeLastItem({})).to.equal('listItem0')
+          expect(myEl._computeLastItem(window.testData)).to.equal('listItem5')
+        })
+
+        test('Handle request', function() {
+          myEl._busy = true;
+          myEl._handleReq({ 'detail': { 'response': window.testData } })
+          expect(myEl._busy).to.be.false;
+          expect(myEl.data).to.equal(window.testData);
+        })
+        
+        test('Update search', function() {
+          var server = sinon.fakeServer.create();
+          var spy = sinon.spy(myEl, '_handleReq');
+
+          server.respondWith(
+            'POST',
+            /\/photos\/apiHelper\/tagList\/\w*-\w*\?q=\w*/, 
+            [
+              200,
+              { "Content-Type": "application/json" },
+              '{"success": true}'
+            ]
+          );
+          myEl._updateSearch('send request');
+          // Timeout because the search input has a 200 milsec debouncer
+          window.setTimeout(function() {
+            server.respond();
+            expect(spy.calledOnce).to.be.true;
+          },300)
+        })
+
+        test('Clicking an item creates a tag', function() {
+          var spy = sinon.spy(myEl, '_saveTag');
+          var clearListSpy = sinon.spy(myEl, 'clearList');
+          myEl._handleClick({ model: { item:  {pid: "KWQQ-WCB", name: "Delilah ROBINSON", lifespan: "1817-1848"} } });
+          expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON');
+          expect(spy.getCall(0).args[0].softTag).to.be.false;
+          expect(clearListSpy.calledOnce).to.be.true;
+
+          // Test with no matches
+          myEl.searchVal = 'test'
+          myEl._handleClick({item: ''});
+          expect(spy.getCall(1).args[0].title).to.equal('test');
+          expect(clearListSpy.calledTwice).to.be.true;
+        })
+
+        test('Modal flags apply correct CSS', function() {
+          myEl._modalCheck(true);
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list-modal')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-modal')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-fixed')).to.be.false;
+          myEl._modalCheck(false);
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list-modal')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-modal')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-fixed')).to.be.true;
+        })
+
+        test('Select with enter key', function(done) {
+          var spy = sinon.spy(myEl, '_saveTag');
+          myEl.data = window.testData;
+          
+          var pressEnter = new Event('keydown');
+          pressEnter.keyCode = 13;
+          flush(function() {
+            myEl.selected = 0;
+            window.dispatchEvent(pressEnter);
+            expect(spy.calledOnce).to.be.true;
+            done();
+          })
+        })
+
+        test('Select the next one up with up arrow key', function() {
+          myEl.data = window.testData;
+          var pressUp = new Event('keydown');
+          pressUp.keyCode = 38;
+          
+          flush(function() {
+            myEl.selected = 1;
+            window.dispatchEvent(pressUp);
+            expect(myEl.selected).to.equal(0);
+          })
+        })
+
+        test('Select the next one down with down arrow key', function() {
+          myEl.data = window.testData;
+          var pressDown = new Event('keydown');
+          pressDown.keyCode = 40;
+          
+          flush(function() {
+            myEl.selected = 0;
+            window.dispatchEvent(pressDown);
+            expect(myEl.selected).to.equal(1);
+          })
         })
       });
     </script>
