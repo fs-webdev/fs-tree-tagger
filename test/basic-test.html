@@ -44,7 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(myEl._base).to.equal('https://integration.familysearch.org');
         })
 
-        test('_documentClick clears the list', function() {
+        test('Clicking the document clears the list', function() {
           var clearListSpy = sinon.spy(myEl, 'clearList');
           var event = new Event('click');
           myEl._documentClick(event);
@@ -91,7 +91,93 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(myEl._busy).to.be.false;
           expect(myEl.data).to.equal(window.testData);
         })
+        
+        test('Update search', function() {
+          var server = sinon.fakeServer.create();
+          var spy = sinon.spy(myEl, '_handleReq');
 
+          server.respondWith(
+            'POST',
+            /\/photos\/apiHelper\/tagList\/\w*-\w*\?q=\w*/, 
+            [
+              200,
+              { "Content-Type": "application/json" },
+              '{"success": true}'
+            ]
+          );
+          myEl._updateSearch('send request');
+          // Timeout because the search input has a 200 milsec debouncer
+          window.setTimeout(function() {
+            server.respond();
+            expect(spy.calledOnce).to.be.true;
+          },300)
+        })
+
+        test('Clicking an item creates a tag', function() {
+          var spy = sinon.spy(myEl, '_saveTag');
+          var clearListSpy = sinon.spy(myEl, 'clearList');
+          myEl._handleClick({ model: { item:  {pid: "KWQQ-WCB", name: "Delilah ROBINSON", lifespan: "1817-1848"} } });
+          expect(spy.getCall(0).args[0].title).to.equal('Delilah ROBINSON');
+          expect(spy.getCall(0).args[0].softTag).to.be.false;
+          expect(clearListSpy.calledOnce).to.be.true;
+
+          // Test with no matches
+          myEl.searchVal = 'test'
+          myEl._handleClick({item: ''});
+          expect(spy.getCall(1).args[0].title).to.equal('test');
+          expect(clearListSpy.calledTwice).to.be.true;
+        })
+
+        test('Modal flags apply correct CSS', function() {
+          myEl._modalCheck(true);
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list-modal')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-modal')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-fixed')).to.be.false;
+          myEl._modalCheck(false);
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list-modal')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-modal')).to.be.false;
+          expect(Polymer.dom(myEl.root).querySelector('#resultList').classList.contains('results-list')).to.be.true;
+          expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-fixed')).to.be.true;
+        })
+
+        test('Select with enter key', function(done) {
+          var spy = sinon.spy(myEl, '_saveTag');
+          myEl.data = window.testData;
+          
+          var pressEnter = new Event('keydown');
+          pressEnter.keyCode = 13;
+          flush(function() {
+            myEl.selected = 0;
+            window.dispatchEvent(pressEnter);
+            expect(spy.calledOnce).to.be.true;
+            done();
+          })
+        })
+
+        test('Select the next one up with up arrow key', function() {
+          myEl.data = window.testData;
+          var pressUp = new Event('keydown');
+          pressUp.keyCode = 38;
+          
+          flush(function() {
+            myEl.selected = 1;
+            window.dispatchEvent(pressUp);
+            expect(myEl.selected).to.equal(0);
+          })
+        })
+
+        test('Select the next one down with down arrow key', function() {
+          myEl.data = window.testData;
+          var pressDown = new Event('keydown');
+          pressDown.keyCode = 40;
+          
+          flush(function() {
+            myEl.selected = 0;
+            window.dispatchEvent(pressDown);
+            expect(myEl.selected).to.equal(1);
+          })
+        })
       });
     </script>
   </body>
