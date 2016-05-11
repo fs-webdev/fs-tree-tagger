@@ -43,7 +43,7 @@ Example:
     <i id='busySpinner' class='spinner'></i>
     <div id='resultList' class="results-list">
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
-      <div class="results" hidden='[[!searchVal]]'>
+      <div id='results' class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
           <div id='listItem[[index]]' class="layout horizontal center contents justified"  on-click='_handleClick'>
             <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
@@ -212,6 +212,7 @@ Example:
        * Clears the search input
        */
       clearList: function() {
+        this.$.results.scrollTop = 0;
         this.searchVal = '';
         if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
         this.selected = null;
