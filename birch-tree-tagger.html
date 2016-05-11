@@ -59,8 +59,13 @@ Example:
         <!-- If they are creating a non existing tag -->
         <div id='[[_computeLastItem(data)]]' class="layout horizontal center contents justified" on-click='_handleClick'>
           <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
-            <div class='flex strong-name'>
-              <wc-i18n key='birch-tree-tagger.add_new'></wc-i18n>
+            <div class='flex'>
+              <div class='strong-name'>
+                <wc-i18n key='birch-tree-tagger.add_new'></wc-i18n>
+              </div>
+              <div>
+                <small>[[searchVal]]</small>
+              </div>
             </div>
         </div>
       </div>
