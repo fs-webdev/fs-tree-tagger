@@ -32,7 +32,7 @@ Example:
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
     <wc-i18n-src locale='[[_lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
-    <wc-i18n id='searchPlaceholder' key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>    
+    <wc-i18n id='searchPlaceholder' key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>
     <iron-ajax
       id='req'
       method='GET'
@@ -55,7 +55,7 @@ Example:
               </div>
             </div>
           </div>
-        </template> 
+        </template>
         <!-- If they are creating a non existing tag -->
         <div id='[[_computeLastItem(data)]]' class="layout horizontal center contents justified" on-click='_handleClick'>
           <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
@@ -78,7 +78,7 @@ Example:
 
       behaviors: [
         OakAJAXBehavior,
-        WCI18nBehavior 
+        WCI18nBehavior
       ],
 
       properties: {
@@ -122,6 +122,14 @@ Example:
         data: {
           type: Object,
           value: function() { return [] }
+        },
+        /**
+         * Reposition the results list if near the left edge of the screen
+         */
+        leftEdge: {
+          type: Boolean,
+          value: false,
+          observer: '_leftStyleChange'
         },
         /**
          * The height of the tag
@@ -231,7 +239,7 @@ Example:
         } else {
           return 'listItem0';
         }
-        
+
       },
       /**
        * Handles the response from the server
@@ -239,6 +247,16 @@ Example:
       _handleReq: function(e) {
         this._busy = false;
         this.data = e.detail.response;
+      },
+      _leftStyleChange: function(leftEdge) {
+        var results = this.$.resultList;
+        if (leftEdge) {
+          results.classList.remove('results-list-modal');
+          results.classList.add('results-list-modal-left')
+        } else {
+          results.classList.remove('results-list-modal-left')
+          results.classList.add('results-list-modal');
+        }
       },
       _updateCategory: function(category) {
         if (category === 'AUDIO') {
@@ -265,14 +283,14 @@ Example:
        */
       _handleClick: function(e) {
         var tag = {};
-        
+
         this.selected = null;
         if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
         tag.artifactId = parseInt(this.artifactId);
         if (!e.model) {
           tag.title = this.searchVal;
         } else {
-          var person = e.model.item;       
+          var person = e.model.item;
           tag.title = person.name;
           if (person.pid) tag.taggedPersonId = person.mpid;
         }
@@ -350,10 +368,10 @@ Example:
           if (selectedItem.scrollIntoViewIfNeeded) {
             selectedItem.scrollIntoViewIfNeeded();
           } else {
-            selectedItem.scrollIntoView();  
+            selectedItem.scrollIntoView();
           }
         }
-        
+
         var selectedFirst = this.$$('#listItem0');
         var selectedNext = this.$$('#listItem' + (this.selected + 1));
         if (this.selected == this.data.length) {
@@ -378,7 +396,7 @@ Example:
           if (selectedItem.scrollIntoViewIfNeeded) {
             selectedItem.scrollIntoViewIfNeeded();
           } else {
-            selectedItem.scrollIntoView(false);  
+            selectedItem.scrollIntoView(false);
           }
         }
         var selectedLast =  this.$$('#listItem' + this.data.length);
@@ -413,7 +431,7 @@ Example:
           } else {
             self.fire('save-tag-success', result);
           }
-          
+
         })
       },
       _updateSpinner: function() {
@@ -422,7 +440,7 @@ Example:
           spinner.style.opacity = 1;
         } else if (spinner) {
           spinner.style.opacity = 0;
-        }  
+        }
       }
     });
   </script>

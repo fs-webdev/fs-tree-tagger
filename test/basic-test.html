@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           myEl.data = window.testData;
           var inputEvent = new Event('input');
           Polymer.dom(myEl.root).querySelector('input').dispatchEvent(inputEvent)
-          
+
           flush(function() {
             Polymer.dom(myEl.root).querySelector('#listItem0').classList.add('selected')
             myEl.selected = 0;
@@ -91,14 +91,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(myEl._busy).to.be.false;
           expect(myEl.data).to.equal(window.testData);
         })
-        
+
         test('Update search', function() {
           var server = sinon.fakeServer.create();
           var spy = sinon.spy(myEl, '_handleReq');
 
           server.respondWith(
             'POST',
-            /\/photos\/apiHelper\/tagList\/\w*-\w*\?q=\w*/, 
+            /\/photos\/apiHelper\/tagList\/\w*-\w*\?q=\w*/,
             [
               200,
               { "Content-Type": "application/json" },
@@ -144,7 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         test('Select with enter key', function(done) {
           var spy = sinon.spy(myEl, '_saveTag');
           myEl.data = window.testData;
-          
+
           var pressEnter = new Event('keydown');
           pressEnter.keyCode = 13;
           flush(function() {
@@ -159,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           myEl.data = window.testData;
           var pressUp = new Event('keydown');
           pressUp.keyCode = 38;
-          
+
           flush(function() {
             myEl.selected = 1;
             window.dispatchEvent(pressUp);
@@ -167,15 +167,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           })
         })
 
-        test('Select the next one down with down arrow key', function() {
+        test('Select the next one down with down arrow key', function(done) {
           myEl.data = window.testData;
           var pressDown = new Event('keydown');
           pressDown.keyCode = 40;
-          
+
           flush(function() {
             myEl.selected = 0;
             window.dispatchEvent(pressDown);
             expect(myEl.selected).to.equal(1);
+            done();
+          })
+        })
+
+        test('Set leftEdge to get left edge CSS', function(done) {
+          expect(myEl.leftEdge).to.be.false;
+          myEl.leftEdge = true;
+          flush(function() {
+            var resultList = Polymer.dom(myEl.root).querySelector('#resultList');
+            expect(resultList.classList.contains('results-list-modal-left')).to.be.true;
+            expect(resultList.classList.contains('results-list-modal')).to.be.false;
+            done();
           })
         })
       });
