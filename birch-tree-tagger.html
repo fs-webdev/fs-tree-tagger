@@ -418,7 +418,6 @@ Example:
           headers: this.authHeaders,
           body: JSON.stringify(tag)
         }).then(function(response) {
-          console.log('Status', response.status);
           if (response.status == 200) {
             return response.json();
           } else {
