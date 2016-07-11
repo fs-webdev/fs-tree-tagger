@@ -292,7 +292,8 @@ Example:
         } else {
           var person = e.model.item;
           tag.title = person.name;
-          if (person.pid) tag.taggedPersonId = person.mpid;
+          if (person.mpid) tag.taggedPersonId = person.mpid;
+          if (person.pid && !person.mpid) this._pid = person.pid;
         }
         tag.softTag = this.softTag;
         if (this.category === 'IMAGE') {
@@ -429,6 +430,7 @@ Example:
           if (self.softTag) {
             self.fire('addTag', result);
           } else {
+            result.pid = self._pid;
             self.fire('save-tag-success', result);
           }
 
