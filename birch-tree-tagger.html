@@ -83,13 +83,6 @@ Example:
 
       properties: {
         /**
-         * The artifact id of the artifact being tagged
-         */
-        artifactId: {
-          type: String,
-          value: ''
-        },
-        /**
          * A base location for creating the url for the request
          */
         _base: {
@@ -286,13 +279,20 @@ Example:
 
         this.selected = null;
         if (this.$$('.selected')) this.$$('.selected').classList.remove('selected');
-        tag.artifactId = parseInt(this.artifactId);
+        tag.artifactId = parseInt(location.href.replace(/^.*?\/(\d+).*$/,'$1'), 10);
         if (!e.model) {
           tag.title = this.searchVal;
         } else {
           var person = e.model.item;
           tag.title = person.name;
-          if (person.pid) tag.taggedPersonId = person.mpid;
+          // Get mpid if they already have personas and memory people attached
+          // Otherwise, get pid if they are from the tree but don't have a persona 
+          // for attaching to a memory person
+          if (person.mpid) {
+            tag.taggedPersonId = person.mpid;
+          } else if (person.pid && !person.mpid) { 
+            this._pid = person.pid;
+          }
         }
         tag.softTag = this.softTag;
         if (this.category === 'IMAGE') {
@@ -412,12 +412,12 @@ Example:
        */
       _saveTag: function(tag) {
         var self = this;
-        fetch(location.origin + '/artifactmanager/artifacts/' + this.artifactId + '/tags/', {
+        artifactId = location.href.replace(/^.*?\/(\d+).*$/,'$1');
+        fetch(location.origin + '/artifactmanager/artifacts/' + artifactId + '/tags/', {
           method: 'POST',
           headers: this.authHeaders,
           body: JSON.stringify(tag)
         }).then(function(response) {
-          console.log('Status', response.status);
           if (response.status == 200) {
             return response.json();
           } else {
@@ -426,9 +426,11 @@ Example:
           }
         }).then(function(result) {
           self._busy = false;
+          result.pid = self._pid;
+          self._pid = null;
           if (self.softTag) {
             self.fire('addTag', result);
-          } else {
+          } else { 
             self.fire('save-tag-success', result);
           }
 
