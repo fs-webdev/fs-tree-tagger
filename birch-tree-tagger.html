@@ -420,11 +420,11 @@ Example:
           }
         }).then(function(result) {
           self._busy = false;
+          result.pid = self._pid;
+          self._pid = null;
           if (self.softTag) {
             self.fire('addTag', result);
-          } else {
-            result.pid = self._pid;
-            self._pid = null;
+          } else { 
             self.fire('save-tag-success', result);
           }
 
