@@ -285,8 +285,14 @@ Example:
         } else {
           var person = e.model.item;
           tag.title = person.name;
-          if (person.mpid) tag.taggedPersonId = person.mpid;
-          if (person.pid && !person.mpid) this._pid = person.pid;
+          // Get mpid if they already have personas and memory people attached
+          // Otherwise, get pid if they are from the tree but don't have a persona 
+          // for attaching to a memory person
+          if (person.mpid) {
+            tag.taggedPersonId = person.mpid;
+          } else if (person.pid && !person.mpid) { 
+            this._pid = person.pid;
+          }
         }
         tag.softTag = this.softTag;
         if (this.category === 'IMAGE') {
