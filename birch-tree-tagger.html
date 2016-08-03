@@ -240,6 +240,9 @@ Example:
       _handleReq: function(e) {
         this._busy = false;
         this.data = e.detail.response;
+        this.async(function() {
+          this._selectFirst();
+        }, 0)
       },
       _leftStyleChange: function(leftEdge) {
         var results = this.$.resultList;
@@ -314,11 +317,11 @@ Example:
        */
       _handleKeyDown: function(e) {
         if (e.keyCode == 40 && !this._busy) {
-          this._selectDown(e);
+          this._selectDown();
         } else if (e.keyCode == 38 && !this._busy) {
-          this._selectUp(e);
+          this._selectUp();
         } else if (e.keyCode == 13 && !this._busy) {
-          this._selectEnter(e);
+          this._selectEnter();
         } else if (e.keyCode == 27) {
           this.clearList();
         } else {
@@ -343,8 +346,7 @@ Example:
       /**
        * Pressing enter with an item selected will create a tag
        */
-      _selectEnter: function(e) {
-        e.preventDefault();
+      _selectEnter: function() {
         this._busy = true;
         if (this.selected != null) {
           this.$$('#listItem' + this.selected).click();
@@ -353,10 +355,20 @@ Example:
         }
       },
       /**
+       * 
+       * @return {[type]} [description]
+       */
+      _selectFirst: function() {
+        this.selected = 0;
+        var currentlySelected = this.$$('.selected');
+        var selectedFirst = this.$$('#listItem0');
+        if (currentlySelected) currentlySelected.classList.remove('selected');
+        selectedFirst.classList.add('selected');
+      },
+      /**
        * Selects the next item up in the list
        */
-      _selectUp: function(e) {
-        e.preventDefault();
+      _selectUp: function() {
         if (this.selected == null || this.selected == 0) {
           this.selected = this.data.length;
         } else {
@@ -383,8 +395,7 @@ Example:
       /**
        * Selects the next item down in the list
        */
-      _selectDown: function(e) {
-        e.preventDefault();
+      _selectDown: function() {
         if (this.selected == null || this.selected == this.data.length) {
           this.selected = 0;
         } else if (this.data.length > 0) {
