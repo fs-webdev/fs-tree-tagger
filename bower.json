@@ -21,6 +21,7 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "fs-styles": "fs-webdev/fs-styles",
     "oak-ajax-behavior": "familysearchelements/oak-ajax-behavior",
+    "oak-i18n-behavior": "FamilySearchElements/oak-i18n-behavior",
     "wc-i18n": "jshcrowthe/wc-i18n#^1.1.0",
     "fetch": "jshcrowthe/fetch#~0.11.1"
   },

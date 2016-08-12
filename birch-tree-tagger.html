@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../oak-ajax-behavior/oak-ajax-behavior.html">
+<link rel="import" href="../oak-i18n-behavior/oak-i18n-behavior.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wc-i18n/wc-i18n.html">
 <link rel="import" href="../fs-styles/fs-styles.html">
@@ -31,7 +32,7 @@ Example:
   <style include='iron-flex fs-styles'></style>
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
-    <wc-i18n-src locale='[[_lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
+    <wc-i18n-src locale='[[lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
     <wc-i18n id='searchPlaceholder' key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>
     <iron-ajax
       id='req'
@@ -78,6 +79,7 @@ Example:
 
       behaviors: [
         OakAJAXBehavior,
+        OakI18nBehavior,
         WCI18nBehavior
       ],
 
