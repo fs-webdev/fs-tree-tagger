@@ -46,12 +46,12 @@ Example:
       <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
       <div id='results' class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
-          <div id='listItem[[index]]' class="layout horizontal center contents justified"  on-click='_handleClick'>
+          <div id='listItem[[index]]' class="contents"  on-click='_handleClick'>
             <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <img alt="" src='[[item.thumbSquareUrl]]' hidden='[[!item.thumbSquareUrl]]' class='round'>
-            <div class='flex'>
+            <div>
               <div class='strong-name'><strong>[[item.name]]</strong></div>
-              <div hidden='[[!item.pid]]'>
+              <div class='pid' hidden='[[!item.pid]]'>
                 <small>[[item.lifespan]]</small>&nbsp;•&nbsp;<small>[[item.pid]]</small>
               </div>
             </div>
