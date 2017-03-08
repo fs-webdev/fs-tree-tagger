@@ -37,14 +37,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="photo" style='width:400px; height:400px; background-color:lightblue; position: absolute; left: 10px'>
       <div id="photoTag-tag_temp" style="width: 100px; height: 100px; background-color: green; position: absolute; left: 30px"></div>
     </div>
-    
 
     <birch-tree-tagger id='tagger' modal></birch-tree-tagger>
+
+    <div style="position: absolute; top: 480px;">
+      <label for="langPicker">Choose page language: </label>
+      <select id="langPicker">
+        <option selected>en</option>
+        <option>es</option>
+        <option>fr</option>
+        <option>ko</option>
+      </select>
+    </div>
+
     <script>
       function toggleModal() {
         var tagger = document.querySelector('birch-tree-tagger');
         tagger.modal = !tagger.modal;
       }
+
+      var langPicker = document.querySelector('#langPicker');
+      langPicker.addEventListener('change', function() {
+        document.querySelector('birch-tree-tagger').language = langPicker.value;
+      });
     </script>
 
   </body>

@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wc-i18n/wc-i18n.html">
 <link rel="import" href="../fs-styles/fs-styles.html">
-<link rel="import" href="../fetch/fetch.html">
+<link rel="import" href="../fetch/fetch.js">
 
 <!--
 An element that provides autocomplete suggestions for tagging to the tree
@@ -32,18 +32,16 @@ Example:
   <style include='iron-flex fs-styles'></style>
   <link rel="import" type="css" href="birch-tree-tagger.css">
   <template>
-    <wc-i18n-src locale='[[lang]]' domain='birch-tree-tagger' locale-dir='[[localeDir()]]'></wc-i18n-src>
-    <wc-i18n id='searchPlaceholder' key='birch-tree-tagger.who_is' provider value={{_whoIs}}></wc-i18n>
     <iron-ajax
       id='req'
       method='GET'
-      url='[[_base]]/photos/apiHelper/tagList/[[cisId]]?q=[[searchVal]]'
+      url='[[ajaxBase]]/photos/apiHelper/tagList/[[cisId]]?q=[[searchVal]]'
       headers='[[authHeaders]]'
       handle-as='json'
       on-response='_handleReq'></iron-ajax>
     <i id='busySpinner' class='spinner'></i>
     <div id='resultList' class="results-list">
-      <input id='searchBox' class='search-input' type="text" placeholder=[[_whoIs]] value='{{searchVal::input}}'>
+      <input id='searchBox' class='search-input' type="text" placeholder="[[_getPlaceholder(i18n, category)]]" value='{{searchVal::input}}'>
       <div id='results' class="results" hidden='[[!searchVal]]'>
         <template is='dom-repeat' items='[[data]]'>
           <div id='listItem[[index]]' class="contents"  on-click='_handleClick'>
@@ -62,7 +60,7 @@ Example:
           <i class='person-icon' hidden='[[item.thumbSquareUrl]]'></i>
             <div class='flex'>
               <div class='strong-name'>
-                <wc-i18n key='birch-tree-tagger.add_new'></wc-i18n>
+                [[i18n('add_new')]]
               </div>
               <div>
                 <small>[[searchVal]]</small>
@@ -80,17 +78,10 @@ Example:
       behaviors: [
         OakAJAXBehavior,
         OakI18nBehavior,
-        WCI18nBehavior
+        WCI18n()
       ],
 
       properties: {
-        /**
-         * A base location for creating the url for the request
-         */
-        _base: {
-          type: String,
-          value: ''
-        },
         /**
          * A flag for when the component is busy
          */
@@ -101,8 +92,7 @@ Example:
         },
         category: {
           type: String,
-          value: 'IMAGE',
-          observer: '_updateCategory'
+          value: 'IMAGE'
         },
         /**
          * The cis id of the user
@@ -186,12 +176,6 @@ Example:
         }
       },
       ready: function() {
-        // oak-ajax-behavior won't proxy localhost on port 5000
-        if (~location.origin.indexOf('localhost')) {
-          this._base = 'https://integration.familysearch.org'
-        } else {
-          this._base = this.ajaxBase;
-        }
         this.listen(window,'keydown', '_handleKeyDown');
         this.listen(document, 'click', '_documentClick');
       },
@@ -256,11 +240,14 @@ Example:
           results.classList.add('results-list-modal');
         }
       },
-      _updateCategory: function(category) {
+      _getPlaceholder: function(i18n, category) {
+        if(!i18n('who_is')) return '';
         if (category === 'AUDIO') {
-          this.$.searchPlaceholder.setAttribute('key','birch-tree-tagger.audio')
+          return this.i18n('audio');
         } else if (category === 'PDF') {
-          this.$.searchPlaceholder.setAttribute('key','birch-tree-tagger.doc')
+          return this.i18n('doc');
+        } else {
+          return this.i18n('who_is');
         }
       },
       /**
@@ -291,11 +278,11 @@ Example:
           var person = e.model.item;
           tag.title = person.name;
           // Get mpid if they already have personas and memory people attached
-          // Otherwise, get pid if they are from the tree but don't have a persona 
+          // Otherwise, get pid if they are from the tree but don't have a persona
           // for attaching to a memory person
           if (person.mpid) {
             tag.taggedPersonId = person.mpid;
-          } else if (person.pid && !person.mpid) { 
+          } else if (person.pid && !person.mpid) {
             this._pid = person.pid;
           }
         }
@@ -357,7 +344,7 @@ Example:
         }
       },
       /**
-       * 
+       *
        * @return {[type]} [description]
        */
       _selectFirst: function() {
@@ -443,7 +430,7 @@ Example:
           self._pid = null;
           if (self.softTag) {
             self.fire('addTag', result);
-          } else { 
+          } else {
             self.fire('save-tag-success', result);
           }
 
