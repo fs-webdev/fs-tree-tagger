@@ -23,7 +23,8 @@
     "oak-ajax-behavior": "familysearchelements/oak-ajax-behavior",
     "oak-i18n-behavior": "FamilySearchElements/oak-i18n-behavior#1.x",
     "wc-i18n": "jshcrowthe/wc-i18n#^2.1.0",
-    "fetch": "jshcrowthe/fetch#~0.11.1"
+    "fetch": "github/fetch#^1.0.0",
+    "es6-promise-polyfill": "git+https://github.com/taylorhakes/promise-polyfill#6.0.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
