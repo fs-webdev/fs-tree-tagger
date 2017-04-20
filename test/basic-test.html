@@ -62,24 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(myEl.style.top).to.equal('200px');
         })
 
-        test('Clear list and remove selected class from list item', function(done) {
-          myEl.searchVal = 'abc';
-          expect(myEl.searchVal).to.equal('abc');
-          myEl.data = window.testData;
-          var inputEvent = new Event('input');
-          Polymer.dom(myEl.root).querySelector('input').dispatchEvent(inputEvent)
-
-          flush(function() {
-            Polymer.dom(myEl.root).querySelector('#listItem0').classList.add('selected')
-            myEl.selected = 0;
-            myEl.clearList();
-            expect(myEl.searchVal).to.equal('');
-            expect(myEl.selected).to.equal(null);
-            expect(Polymer.dom(myEl.root).querySelector('#listItem0').classList.contains('selected')).to.be.false
-            done();
-          })
-        })
-
         test('Compute the index for the last item', function() {
           expect(myEl._computeLastItem({})).to.equal('listItem0')
           expect(myEl._computeLastItem(window.testData)).to.equal('listItem5')
@@ -140,58 +122,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(Polymer.dom(myEl.root).querySelector('#busySpinner').classList.contains('spinner-fixed')).to.be.true;
         })
 
-        test('Select with enter key', function(done) {
+        test('Select with enter key', function() {
           var spy = sinon.spy(myEl, '_saveTag');
           myEl.data = window.testData;
 
-          var pressEnter = document.createEvent('Event');
-          pressEnter.keyCode = 13;
-          pressEnter.initEvent('keydown', true, true);
-          
-          flush(function() {
+          setTimeout(function() {
             myEl.selected = 0;
-            document.dispatchEvent(pressEnter);
+            myEl._selectEnter();
             expect(spy.called).to.be.true;
-            done();
-          })
+          },200)
         })
 
         test('Select the next one up with up arrow key', function() {
           myEl.data = window.testData;
-          var pressUp = document.createEvent('Event');
-          pressUp.keyCode = 38;
-          pressUp.initEvent('keydown', true, true);
 
-          flush(function() {
+          setTimeout(function() {
             myEl.selected = 1;
-            window.dispatchEvent(pressUp);
+            myEl._selectUp();
             expect(myEl.selected).to.equal(0);
-          })
+          },200)
         })
 
         test('Select the next one down with down arrow key', function() {
           myEl.data = window.testData;
-          var pressDown = document.createEvent('Event');
-          pressDown.keyCode = 40;
-          pressDown.initEvent('keydown', true, true);
 
-          flush(function() {
+          setTimeout(function() {
             myEl.selected = 0;
-            window.dispatchEvent(pressDown);
-            console.log('my selected:::::', myEl.selected);
+            myEl._selectDown();
             expect(myEl.selected).to.equal(1);
-          })
+          },200)
         })
 
-        test('Set leftEdge to get left edge CSS', function(done) {
+        test('Set leftEdge to get left edge CSS', function() {
           expect(myEl.leftEdge).to.be.false;
           myEl.leftEdge = true;
           myEl._leftStyleChange(true);
           flush(function() {
             var resultList = Polymer.dom(myEl.root).querySelector('#resultList');
-            expect(resultList.classList.contains('results-list-modal-left')).to.be.true;
-            expect(resultList.classList.contains('results-list-modal')).to.be.false;
-            done();
+            expect(resultList.classList.includes('results-list-modal-left')).to.be.true;
+            expect(resultList.classList.includes('results-list-modal')).to.be.false;
           })
         })
       });
