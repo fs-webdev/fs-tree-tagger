@@ -274,9 +274,11 @@ Example:
         tag.artifactId = parseInt(location.href.replace(/^.*?\/(\d+).*$/,'$1'), 10);
         if (!e.model) {
           tag.title = this.searchVal;
+          tag.attachedToTreePerson = false;
         } else {
           var person = e.model.item;
           tag.title = person.name;
+          tag.attachedToTreePerson = true;
           // Get mpid if they already have personas and memory people attached
           // Otherwise, get pid if they are from the tree but don't have a persona
           // for attaching to a memory person
@@ -412,7 +414,8 @@ Example:
        */
       _saveTag: function(tag) {
         var self = this;
-        artifactId = location.href.replace(/^.*?\/(\d+).*$/,'$1');
+        var attachedToTreePerson = tag.attachedToTreePerson;
+        var artifactId = location.href.replace(/^.*?\/(\d+).*$/,'$1');
         fetch(location.origin + '/artifactmanager/artifacts/' + artifactId + '/tags/', {
           method: 'POST',
           headers: this.authHeaders,
@@ -427,6 +430,7 @@ Example:
         }).then(function(result) {
           self._busy = false;
           result.pid = self._pid;
+          result.attachedToTreePerson = attachedToTreePerson;
           self._pid = null;
           if (self.softTag) {
             self.fire('addTag', result);
