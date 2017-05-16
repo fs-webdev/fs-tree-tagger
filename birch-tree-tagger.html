@@ -304,6 +304,11 @@ Example:
           tag.height = temp.offsetHeight / img.offsetHeight;
           tag.x = parseInt(temp.style.left,10) / img.offsetWidth;
           tag.y = parseInt(temp.style.top, 10) / img.offsetHeight;
+          // Validate tag
+          if (tag.width > 1) tag.width = 1;
+          if (tag.height > 1) tag.height = 1;
+          if (tag.x < 0) tag.x = 0;
+          if (tag.y < 0) tag.y = 0;
         }
 
         this.fire('tag-save-waiting');
