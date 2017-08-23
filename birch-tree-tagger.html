@@ -176,7 +176,7 @@ Example:
         }
       },
       ready: function() {
-        this.listen(window,'keydown', '_handleKeyDown');
+        this.listen(this.$.searchBox,'keydown', '_handleKeyDown');
         this.listen(document, 'click', '_documentClick');
       },
       /**
