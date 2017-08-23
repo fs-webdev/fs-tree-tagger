@@ -19,6 +19,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
+    "webcomponentsjs": "^v1.0.2",
     "fs-styles": "fs-webdev/fs-styles",
     "oak-ajax-behavior": "familysearchelements/oak-ajax-behavior",
     "oak-i18n-behavior": "FamilySearchElements/oak-i18n-behavior#1.x",
@@ -31,6 +32,7 @@
     "web-component-tester": "^4.0.0"
   },
   "resolutions": {
-    "fetch": "^1.0.0"
+    "fetch": "^1.0.0",
+    "webcomponentsjs": "^0.7.24"
   }
 }
