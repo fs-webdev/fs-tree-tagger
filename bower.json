@@ -1,5 +1,5 @@
 {
-  "name": "birch-tree-tagger",
+  "name": "fs-tree-tagger",
   "version": "2.0.5",
   "authors": [
     "Anonymous <anonymous@example.com>"
@@ -10,7 +10,7 @@
     "polymer",
     "seed"
   ],
-  "main": "birch-tree-tagger.html",
+  "main": "fs-tree-tagger.html",
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/<USERNAME>/seed-element/",
   "ignore": [
