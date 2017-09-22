@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/FamilySearchElements/birch-tree-tagger.svg?branch=master)](https://travis-ci.org/FamilySearchElements/birch-tree-tagger)
+[![Build Status](https://travis-ci.org/fs-webdev/fs-tree-tagger.svg?branch=master)](https://travis-ci.org/fs-webdev/fs-tree-tagger)
 
-# birch-tree-tagger
+# fs-tree-tagger
 
 An element that provides autocomplete suggestions for tagging to the tree
 

@@ -12,30 +12,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>birch-tree-tagger Demo</title>
+    <title>fs-tree-tagger Demo</title>
     <script>
       window.Polymer = {
         dom: 'shadow'
       };
     </script>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../birch-tree-tagger.html">
+    <link rel="import" href="../fs-tree-tagger.html">
     <script src='data.js'></script>
   </head>
   <body unresolved>
 
-    <p>An example of <code>&lt;birch-tree-tagger&gt;</code>:</p>
+    <p>An example of <code>&lt;fs-tree-tagger&gt;</code>:</p>
 
     <template id='app' is='dom-bind'>
       <!-- <label>Session Id: </label><input id='input' type="text" on-input='_handleInput'> -->
       <script>
-        var tagger = document.querySelector('birch-tree-tagger');
+        var tagger = document.querySelector('fs-tree-tagger');
         tagger.data = window.testData;
       </script>
     </template>
     <button onclick='toggleModal()' style='position: absolute; top: 120px; z-index: 2'>Toggle Modal / Fixed</button>
 
-    <birch-tree-tagger id='tagger' modal></birch-tree-tagger>
+    <fs-tree-tagger id='tagger' modal></fs-tree-tagger>
 
     <div style="position: absolute; top: 180px;">
       <label for="langPicker">Choose page language: </label>
@@ -49,13 +49,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
       function toggleModal() {
-        var tagger = document.querySelector('birch-tree-tagger');
+        var tagger = document.querySelector('fs-tree-tagger');
         tagger.modal = !tagger.modal;
       }
 
       var langPicker = document.querySelector('#langPicker');
       langPicker.addEventListener('change', function() {
-        document.querySelector('birch-tree-tagger').language = langPicker.value;
+        document.querySelector('fs-tree-tagger').language = langPicker.value;
       });
     </script>
 

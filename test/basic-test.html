@@ -21,26 +21,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../fetch/fetch.js"></script>
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../birch-tree-tagger.html">
+    <link rel="import" href="../fs-tree-tagger.html">
   </head>
   <body>
     <!-- Add elements to prevent functions from throwing errors -->
     <img id='photo' src="http://lorempixel.com/400/200" alt="">
     <img id='photoTag-tag_temp' src="http://lorempixel.com/200/200" alt="">
     <!-- You can use the document as a place to set up your fixtures. -->
-    <test-fixture id="birch-tree-tagger-fixture">
+    <test-fixture id="fs-tree-tagger-fixture">
       <template>
-        <birch-tree-tagger>
-        </birch-tree-tagger>
+        <fs-tree-tagger>
+        </fs-tree-tagger>
       </template>
     </test-fixture>
 
     <script>
-      suite('<birch-tree-tagger>', function() {
+      suite('<fs-tree-tagger>', function() {
         var myEl;
         var server;
         setup(function() {
-          myEl = fixture('birch-tree-tagger-fixture');
+          myEl = fixture('fs-tree-tagger-fixture');
           server = sinon.fakeServer.create();
         });
 

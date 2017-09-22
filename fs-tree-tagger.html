@@ -22,15 +22,15 @@ An element that provides autocomplete suggestions for tagging to the tree
 
 Example:
 
-    <birch-tree-tagger></birch-tree-tagger>
+    <fs-tree-tagger></fs-tree-tagger>
 
 @demo demo/index.html
 @hero hero.svg
 -->
 
-<dom-module id="birch-tree-tagger">
+<dom-module id="fs-tree-tagger">
   <style include='iron-flex fs-styles'></style>
-  <link rel="import" type="css" href="birch-tree-tagger.css">
+  <link rel="import" type="css" href="fs-tree-tagger.css">
   <template>
     <iron-ajax
       id='req'
@@ -73,7 +73,7 @@ Example:
 
   <script>
     Polymer({
-      is: 'birch-tree-tagger',
+      is: 'fs-tree-tagger',
 
       behaviors: [
         OakAJAXBehavior,
@@ -256,7 +256,7 @@ Example:
       _updateSearch: function(val) {
         var self = this;
         this.selected = null;
-        this.debounce('birch-tree-tagger-search-update', function() {
+        this.debounce('fs-tree-tagger-search-update', function() {
           if (val) {
             self._busy = true;
             self.$.req.generateRequest();
@@ -314,7 +314,7 @@ Example:
         this.fire('tag-save-waiting');
         this._saveTag(tag);
         this.clearList();
-        document.querySelector('birch-tree-tagger').classList.add('hiding');
+        document.querySelector('fs-tree-tagger').classList.add('hiding');
       },
       /**
        * Decided what happens when keys are pressed
